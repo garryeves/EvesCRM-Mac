@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15B30a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <collectionViewItem nibName="collectionCellMainScreen" id="xIU-Bq-zld" userLabel="Main Label Collection View Item" customClass="MainLabelCollectionViewItem" customModule="EvesCRM" customModuleProvider="target">
+            <connections>
+                <outlet property="name" destination="efh-tq-uVV" id="xBs-5f-cx1"/>
+                <outlet property="view" destination="dYq-5G-cQV" id="nuA-AE-x30"/>
+            </connections>
+        </collectionViewItem>
+        <customView id="dYq-5G-cQV" userLabel="View" customClass="MainLabelCollectionViewItemView" customModule="EvesCRM" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="384" height="17"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="efh-tq-uVV">
+                    <rect key="frame" x="-2" y="0.0" width="388" height="17"/>
+                    <animations/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" placeholderString="george" id="YvU-zR-o0k">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="xIU-Bq-zld" name="value" keyPath="representedObject.title" id="MR4-dT-j4t"/>
+                    </connections>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="efh-tq-uVV" secondAttribute="bottom" id="7Kn-cW-dUG"/>
+                <constraint firstItem="efh-tq-uVV" firstAttribute="top" secondItem="dYq-5G-cQV" secondAttribute="top" id="lBW-M2-7RR"/>
+                <constraint firstItem="efh-tq-uVV" firstAttribute="leading" secondItem="dYq-5G-cQV" secondAttribute="leading" id="os4-0g-fii"/>
+                <constraint firstAttribute="trailing" secondItem="efh-tq-uVV" secondAttribute="trailing" id="rds-GI-I1b"/>
+            </constraints>
+            <animations/>
+            <point key="canvasLocation" x="695" y="330.5"/>
+        </customView>
+    </objects>
+</document>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E46" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Decodes" representedClassName="EvesCRM.Decodes" syncable="YES">
+        <attribute name="decode_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decode_value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingAgenda" representedClassName="EvesCRM.MeetingAgenda" syncable="YES">
+        <attribute name="chair" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="minutes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="minutesType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="previousMeetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
+    <entity name="MeetingAgendaItem" representedClassName="EvesCRM.MeetingAgendaItem" syncable="YES">
+        <attribute name="actualEndTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="actualStartTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="agendaID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decisionMade" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussionNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeAllocation" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingAttendees" representedClassName="EvesCRM.MeetingAttendees" syncable="YES">
+        <attribute name="attendenceStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingItemsBroughtForward" representedClassName="EvesCRM.MeetingItemsBroughtForward" syncable="YES">
+        <attribute name="agendaID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="currentUpdate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decisionMade" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussionNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="previousAgendaID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="targetDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingSupportingDocs" representedClassName="EvesCRM.MeetingSupportingDocs" syncable="YES">
+        <attribute name="agendaID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachmentPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingTasks" representedClassName="EvesCRM.MeetingTasks" syncable="YES">
+        <attribute name="agendaID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="externalSystemID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="externalSystemName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="targetDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="taskID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Panes" representedClassName="EvesCRM.Panes" syncable="YES">
+        <attribute name="pane_available" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="pane_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pane_order" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pane_visible" optional="YES" attributeType="Boolean" syncable="YES"/>
+    </entity>
+    <entity name="Projects" representedClassName="EvesCRM.Projects" syncable="YES">
+        <attribute name="projectEndDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="projectStartDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectStatus" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="ProjectTeamMembers" representedClassName="EvesCRM.ProjectTeamMembers" syncable="YES">
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectMemberNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="teamMember" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Roles" representedClassName="EvesCRM.Roles" syncable="YES">
+        <attribute name="roleDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="Stages" representedClassName="EvesCRM.Stages" syncable="YES">
+        <attribute name="stageDescription" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Decodes" positionX="-279" positionY="18" width="128" height="75"/>
+        <element name="MeetingAgenda" positionX="-279" positionY="36" width="128" height="180"/>
+        <element name="MeetingAgendaItem" positionX="-261" positionY="54" width="128" height="195"/>
+        <element name="MeetingAttendees" positionX="-270" positionY="45" width="128" height="105"/>
+        <element name="MeetingItemsBroughtForward" positionX="-252" positionY="63" width="128" height="195"/>
+        <element name="MeetingSupportingDocs" positionX="-243" positionY="72" width="128" height="105"/>
+        <element name="MeetingTasks" positionX="-234" positionY="81" width="128" height="180"/>
+        <element name="Panes" positionX="-270" positionY="27" width="128" height="105"/>
+        <element name="Projects" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="ProjectTeamMembers" positionX="-290" positionY="-9" width="128" height="105"/>
+        <element name="Roles" positionX="-486" positionY="-18" width="128" height="75"/>
+        <element name="Stages" positionX="-270" positionY="45" width="128" height="60"/>
+    </elements>
+</model>

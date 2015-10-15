@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14E11f" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Projects" representedClassName="PRODUCT_MODULE_NAME.Projects" syncable="YES">
+        <attribute name="projectEndDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="projectStartDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectStatus" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="ProjectTeamMembers" representedClassName="PRODUCT_MODULE_NAME.ProjectTeamMembers" syncable="YES">
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectMemberNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="teamMember" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Roles" representedClassName="PRODUCT_MODULE_NAME.Roles" syncable="YES">
+        <attribute name="roleDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Projects" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="ProjectTeamMembers" positionX="-290" positionY="-9" width="128" height="103"/>
+        <element name="Roles" positionX="-486" positionY="-18" width="128" height="75"/>
+    </elements>
+</model>

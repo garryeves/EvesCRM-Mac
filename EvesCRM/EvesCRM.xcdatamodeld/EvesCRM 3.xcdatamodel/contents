@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14E17e" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Decodes" representedClassName="EvesCRM.Decodes" syncable="YES">
+        <attribute name="decode_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decode_value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Panes" representedClassName="EvesCRM.Panes" syncable="YES">
+        <attribute name="pane_available" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="pane_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pane_order" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pane_visible" optional="YES" attributeType="Boolean" syncable="YES"/>
+    </entity>
+    <entity name="Projects" representedClassName="EvesCRM.Projects" syncable="YES">
+        <attribute name="projectEndDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="projectStartDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectStatus" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="ProjectTeamMembers" representedClassName="EvesCRM.ProjectTeamMembers" syncable="YES">
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectMemberNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="teamMember" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Roles" representedClassName="EvesCRM.Roles" syncable="YES">
+        <attribute name="roleDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Decodes" positionX="-279" positionY="18" width="128" height="75"/>
+        <element name="Panes" positionX="-270" positionY="27" width="128" height="105"/>
+        <element name="Projects" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="ProjectTeamMembers" positionX="-290" positionY="-9" width="128" height="105"/>
+        <element name="Roles" positionX="-486" positionY="-18" width="128" height="75"/>
+    </elements>
+</model>

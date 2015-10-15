@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14F27" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AreaOfResponsibility" representedClassName="EvesCRM.AreaOfResponsibility" syncable="YES">
+        <attribute name="areaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="goalID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Context" representedClassName="EvesCRM.Context" syncable="YES">
+        <attribute name="autoEmail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="contextID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentContext" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="personID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Decodes" representedClassName="EvesCRM.Decodes" syncable="YES">
+        <attribute name="decode_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decode_value" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decodeType" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="GoalAndObjective" representedClassName="EvesCRM.GoalAndObjective" syncable="YES">
+        <attribute name="goalID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="visionID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="MeetingAgenda" representedClassName="EvesCRM.MeetingAgenda" syncable="YES">
+        <attribute name="chair" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="minutes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="minutesType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="previousMeetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
+    <entity name="MeetingAgendaItem" representedClassName="EvesCRM.MeetingAgendaItem" syncable="YES">
+        <attribute name="actualEndTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="actualStartTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="agendaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="decisionMade" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussionNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeAllocation" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingAttendees" representedClassName="EvesCRM.MeetingAttendees" syncable="YES">
+        <attribute name="attendenceStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingItemsBroughtForward" representedClassName="EvesCRM.MeetingItemsBroughtForward" syncable="YES">
+        <attribute name="agendaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="currentUpdate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decisionMade" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discussionNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="owner" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="previousAgendaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="targetDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingSupportingDocs" representedClassName="EvesCRM.MeetingSupportingDocs" syncable="YES">
+        <attribute name="agendaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="attachmentPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MeetingTasks" representedClassName="EvesCRM.MeetingTasks" syncable="YES">
+        <attribute name="agendaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="meetingID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="Panes" representedClassName="EvesCRM.Panes" syncable="YES">
+        <attribute name="pane_available" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="pane_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pane_order" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pane_visible" optional="YES" attributeType="Boolean" syncable="YES"/>
+    </entity>
+    <entity name="Projects" representedClassName="EvesCRM.Projects" syncable="YES">
+        <attribute name="areaID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastReviewDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectEndDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="projectStartDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="projectStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="repeatBase" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="repeatInterval" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="repeatType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="reviewFrequency" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="teamID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="ProjectTeamMembers" representedClassName="EvesCRM.ProjectTeamMembers" syncable="YES">
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="projectMemberNotes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="teamMember" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PurposeAndCoreValue" representedClassName="EvesCRM.PurposeAndCoreValue" syncable="YES">
+        <attribute name="purposeID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Roles" representedClassName="EvesCRM.Roles" syncable="YES">
+        <attribute name="roleDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="roleID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="Stages" representedClassName="EvesCRM.Stages" syncable="YES">
+        <attribute name="stageDescription" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Task" representedClassName="EvesCRM.Task" syncable="YES">
+        <attribute name="completionDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dueDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="energyLevel" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="estimatedTime" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="estimatedTimeType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="flagged" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="parentID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="parentType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="priority" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="projectID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="repeatBase" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="repeatInterval" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="repeatType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="taskMode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="urgency" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="TaskAttachment" representedClassName="EvesCRM.TaskAttachment" syncable="YES">
+        <attribute name="attachment" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="taskID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="TaskContext" representedClassName="EvesCRM.TaskContext" syncable="YES">
+        <attribute name="contextID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="taskID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="TaskUpdates" representedClassName="EvesCRM.TaskUpdates" syncable="YES">
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taskID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="updateDate" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
+    <entity name="Vision" representedClassName="EvesCRM.Vision" syncable="YES">
+        <attribute name="purposeID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="visionID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AreaOfResponsibility" positionX="-252" positionY="126" width="128" height="105"/>
+        <element name="Context" positionX="-270" positionY="108" width="128" height="150"/>
+        <element name="Decodes" positionX="-279" positionY="18" width="128" height="90"/>
+        <element name="GoalAndObjective" positionX="-261" positionY="117" width="128" height="105"/>
+        <element name="MeetingAgenda" positionX="-279" positionY="36" width="128" height="180"/>
+        <element name="MeetingAgendaItem" positionX="-261" positionY="54" width="128" height="195"/>
+        <element name="MeetingAttendees" positionX="-270" positionY="45" width="128" height="120"/>
+        <element name="MeetingItemsBroughtForward" positionX="-252" positionY="63" width="128" height="195"/>
+        <element name="MeetingSupportingDocs" positionX="-243" positionY="72" width="128" height="105"/>
+        <element name="MeetingTasks" positionX="-234" positionY="81" width="128" height="90"/>
+        <element name="Panes" positionX="-270" positionY="27" width="128" height="105"/>
+        <element name="Projects" positionX="-63" positionY="-18" width="128" height="225"/>
+        <element name="ProjectTeamMembers" positionX="-290" positionY="-9" width="128" height="105"/>
+        <element name="PurposeAndCoreValue" positionX="-279" positionY="99" width="128" height="90"/>
+        <element name="Roles" positionX="-486" positionY="-18" width="128" height="75"/>
+        <element name="Stages" positionX="-270" positionY="45" width="128" height="60"/>
+        <element name="Task" positionX="-279" positionY="99" width="128" height="360"/>
+        <element name="TaskAttachment" positionX="-279" positionY="135" width="128" height="90"/>
+        <element name="TaskContext" positionX="-261" positionY="117" width="128" height="75"/>
+        <element name="TaskUpdates" positionX="-279" positionY="99" width="128" height="105"/>
+        <element name="Vision" positionX="-270" positionY="108" width="128" height="105"/>
+    </elements>
+</model>
