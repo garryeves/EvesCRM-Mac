@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <viewController nibName="taskUpdateItem" id="fkt-dj-59n" customClass="TaskUpdateCollectionViewItem" customModule="EvesCRM" customModuleProvider="target">
+            <connections>
+                <outlet property="name" destination="lrv-4C-oed" id="gYU-fh-S0x"/>
+                <outlet property="source" destination="2Ko-7k-Mft" id="Q9L-I9-L3I"/>
+                <outlet property="updateDateString" destination="6eq-rk-kbW" id="Hsd-WI-r7B"/>
+                <outlet property="updateTimeString" destination="uY6-a2-vMy" id="hFY-xn-uCM"/>
+                <outlet property="view" destination="Y6E-iX-aiv" id="O1M-bl-qOU"/>
+            </connections>
+        </viewController>
+        <customView id="Y6E-iX-aiv" customClass="TaskUpdateCollectionViewItemView" customModule="EvesCRM" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="508" height="39"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6eq-rk-kbW" userLabel="txtDate">
+                    <rect key="frame" x="-2" y="22" width="104" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="100" id="6KZ-7L-1tY"/>
+                    </constraints>
+                    <animations/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Label" id="OlI-bk-0DI">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="fkt-dj-59n" name="value" keyPath="representedObject.updateDateString" id="6yM-EY-6ay"/>
+                    </connections>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uY6-a2-vMy" userLabel="txtTime">
+                    <rect key="frame" x="-2" y="-5" width="104" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="100" id="T9C-f6-CQu"/>
+                    </constraints>
+                    <animations/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Label" id="m9o-qQ-e0M">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="fkt-dj-59n" name="value" keyPath="representedObject.updateTimeString" id="z3b-ei-h23"/>
+                    </connections>
+                </textField>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="lrv-4C-oed">
+                    <rect key="frame" x="108" y="0.0" width="402" height="17"/>
+                    <animations/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Multiline Label" id="2ZU-wR-47k">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="fkt-dj-59n" name="value" keyPath="representedObject.title" id="kC3-K1-kKf"/>
+                    </connections>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Ko-7k-Mft" userLabel="source">
+                    <rect key="frame" x="108" y="22" width="402" height="17"/>
+                    <animations/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Label" id="ky6-zI-Ebp">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="fkt-dj-59n" name="value" keyPath="representedObject.source" id="mjO-ug-xig"/>
+                    </connections>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="uY6-a2-vMy" firstAttribute="leading" secondItem="Y6E-iX-aiv" secondAttribute="leading" id="3U8-3s-Uwj"/>
+                <constraint firstItem="6eq-rk-kbW" firstAttribute="top" secondItem="Y6E-iX-aiv" secondAttribute="top" id="3ek-HZ-gp4"/>
+                <constraint firstAttribute="trailing" secondItem="2Ko-7k-Mft" secondAttribute="trailing" id="F9I-yb-Tck"/>
+                <constraint firstItem="2Ko-7k-Mft" firstAttribute="leading" secondItem="6eq-rk-kbW" secondAttribute="trailing" constant="10" id="L3c-hR-td5"/>
+                <constraint firstItem="lrv-4C-oed" firstAttribute="leading" secondItem="6eq-rk-kbW" secondAttribute="trailing" constant="10" id="RMd-hT-iTH"/>
+                <constraint firstItem="uY6-a2-vMy" firstAttribute="top" secondItem="6eq-rk-kbW" secondAttribute="bottom" constant="10" id="RzB-hq-Y0a"/>
+                <constraint firstAttribute="trailing" secondItem="lrv-4C-oed" secondAttribute="trailing" id="iuo-Y4-0U2"/>
+                <constraint firstAttribute="bottom" secondItem="lrv-4C-oed" secondAttribute="bottom" id="mt9-JM-QJe"/>
+                <constraint firstItem="2Ko-7k-Mft" firstAttribute="top" secondItem="Y6E-iX-aiv" secondAttribute="top" id="sHD-Ek-8ra"/>
+                <constraint firstItem="6eq-rk-kbW" firstAttribute="leading" secondItem="Y6E-iX-aiv" secondAttribute="leading" id="vvy-sl-Bpb"/>
+                <constraint firstItem="lrv-4C-oed" firstAttribute="top" secondItem="2Ko-7k-Mft" secondAttribute="bottom" constant="5" id="wKp-I6-vEL"/>
+            </constraints>
+            <animations/>
+            <point key="canvasLocation" x="321" y="198.5"/>
+        </customView>
+    </objects>
+</document>

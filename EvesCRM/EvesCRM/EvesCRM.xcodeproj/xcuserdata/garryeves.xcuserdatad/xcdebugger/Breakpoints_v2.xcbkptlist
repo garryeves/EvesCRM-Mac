@@ -6,31 +6,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "macStartViewController.swift"
-            timestampString = "466500100.9653"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "348"
-            endingLineNumber = "348"
-            landmarkName = "collectionView(_:layout:sizeForItemAtIndexPath:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "macStartViewController.swift"
-            timestampString = "466499693.088243"
+            filePath = "macTaskViewController.swift"
+            timestampString = "467534079.066266"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14"
-            endingLineNumber = "14">
+            startingLineNumber = "234"
+            endingLineNumber = "234"
+            landmarkName = "collectionView(_:itemForRepresentedObjectAtIndexPath:)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -40,28 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "macTaskViewController.swift"
-            timestampString = "466559340.256633"
+            timestampString = "467534079.066266"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13"
-            endingLineNumber = "13"
-            landmarkName = "macTaskViewController"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "macStartViewController.swift"
-            timestampString = "466569305.78531"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "360"
-            endingLineNumber = "360"
-            landmarkName = "collectionView(_:didSelectItemsAtIndexPaths:)"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
+            landmarkName = "collectionView(_:itemForRepresentedObjectAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -71,46 +41,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "macStartViewController.swift"
-            timestampString = "466571564.330956"
+            filePath = "macTaskViewController.swift"
+            timestampString = "467534079.066266"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2175"
-            endingLineNumber = "2175"
-            landmarkName = "dataCellClicked()"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
+            landmarkName = "collectionView(_:numberOfItemsInSection:)"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EvesCRM.MainLabelObject.dataCellClicked (EvesCRM.MainLabelObject)() -&gt; ()"
-                  moduleName = "EvesCRM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/garryeves/Documents/xcode/EvesCRM-mac/EvesCRM/EvesCRM/macStartViewController.swift"
-                  timestampString = "466571564.672465"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2175"
-                  endingLineNumber = "2175"
-                  offsetFromSymbolStart = "3716">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EvesCRM.MainLabelObject.dataCellClicked (EvesCRM.MainLabelObject)() -&gt; ()"
-                  moduleName = "EvesCRM"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/garryeves/Documents/xcode/EvesCRM-mac/EvesCRM/EvesCRM/macStartViewController.swift"
-                  timestampString = "466571564.672652"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "2175"
-                  endingLineNumber = "2175"
-                  offsetFromSymbolStart = "3736">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
