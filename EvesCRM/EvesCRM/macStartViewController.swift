@@ -13,7 +13,7 @@ import AppKit
 import EventKit
 import Contacts
 
-class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutlineViewDataSource, NSCollectionViewDataSource, NSCollectionViewDelegateFlowLayout, NSCollectionViewDelegate
+class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutlineViewDataSource, NSCollectionViewDataSource, NSCollectionViewDelegateFlowLayout, NSCollectionViewDelegate, MyPopupDelegate, MyTaskDelegate
 {
     @IBOutlet weak var OutlineView: NSOutlineView!
     
@@ -30,6 +30,12 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
     @IBOutlet weak var btnMenu2: NSComboBox!
     @IBOutlet weak var btnMenu3: NSComboBox!
     @IBOutlet weak var btnMenu4: NSComboBox!
+    @IBOutlet weak var datePicker: NSDatePicker!
+    @IBOutlet weak var btnSetDate: NSButton!
+    @IBOutlet weak var colScroll1: NSScrollView!
+    @IBOutlet weak var colScroll2: NSScrollView!
+    @IBOutlet weak var colScroll3: NSScrollView!
+    @IBOutlet weak var colScroll4: NSScrollView!
     
     var headerArray: [menuObjectMac] = Array()
     
@@ -56,6 +62,10 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
     var reminderDetails: iOSReminder!
     var projectMemberArray: [String] = Array()
     var myTaskItems: [task] = Array()
+    
+    var myWorkingTask: task!
+    var myWorkingTable: String = ""
+    var reBuildTableName: String = ""
 
     override func viewDidLoad()
     {
@@ -93,6 +103,11 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         collection3.dataSource = self
         collection4.dataSource = self
         
+        collection1.delegate = self
+        collection2.delegate = self
+        collection3.delegate = self
+        collection4.delegate = self
+        
         let minSize = NSMakeSize(0,0)
         
         collection1.maxItemSize = minSize
@@ -109,6 +124,7 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         buildSidebar()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "outlineViewChanged:", name:"NSOutlineViewSelectionDidChangeNotification", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataCellClicked:", name:"NSDataCellClickedNotification", object: nil)
 
     }
     
@@ -276,22 +292,22 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         
         if collectionView == collection1
         {
-            myCell = MainLabelObject(title: table1Contents[indexPath.item].displayText, targetObject: table1Contents[indexPath.item], targetType: btnMenu1.stringValue)
+            myCell = MainLabelObject(title: table1Contents[indexPath.item].displayText, targetObject: table1Contents[indexPath.item], targetType: btnMenu1.stringValue, sourceView: collectionView, table: "Table1")
             rows = table1Contents[indexPath.item].displayText.componentsSeparatedByString("\n").count
         }
         else if collectionView == collection2
         {
-            myCell = MainLabelObject(title: table2Contents[indexPath.item].displayText, targetObject: table2Contents[indexPath.item], targetType: btnMenu2.stringValue)
+            myCell = MainLabelObject(title: table2Contents[indexPath.item].displayText, targetObject: table2Contents[indexPath.item], targetType: btnMenu2.stringValue, sourceView: collectionView, table: "Table2")
             rows = table2Contents[indexPath.item].displayText.componentsSeparatedByString("\n").count
         }
         else if collectionView == collection3
         {
-            myCell = MainLabelObject(title: table3Contents[indexPath.item].displayText, targetObject: table3Contents[indexPath.item], targetType: btnMenu3.stringValue)
+            myCell = MainLabelObject(title: table3Contents[indexPath.item].displayText, targetObject: table3Contents[indexPath.item], targetType: btnMenu3.stringValue, sourceView: collectionView, table: "Table3")
             rows = table3Contents[indexPath.item].displayText.componentsSeparatedByString("\n").count
         }
         else // if collectionView == collection4
         {
-            myCell = MainLabelObject(title: table4Contents[indexPath.item].displayText, targetObject: table4Contents[indexPath.item], targetType: btnMenu4.stringValue)
+            myCell = MainLabelObject(title: table4Contents[indexPath.item].displayText, targetObject: table4Contents[indexPath.item], targetType: btnMenu4.stringValue, sourceView: collectionView, table: "Table4")
             rows = table4Contents[indexPath.item].displayText.componentsSeparatedByString("\n").count
         }
         
@@ -300,29 +316,23 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         
         let mySize = NSSize(width: collectionView.frame.width, height: CGFloat(rows * 17))
         
-//        cellView.frame
-        
-        
-        cellView.representedObject = myCell
-
-        /*
         if (indexPath.item % 2 == 0)
         {
-            cellView.backgroundColor = myRowColour
+            myCell.cellColor = myRowColour
         }
         else
         {
-            cellView.txtCell!.backgroundColor = NSColor.whiteColor()
+            myCell.cellColor = CGColorGetConstantColor(kCGColorClear)
         }
-*/
+        
+        cellView.representedObject = myCell
         
         cellView.preferredContentSize = mySize
 
         return cellView
     }
-    
-    
-    func collectionView(collectionView : NSCollectionView,layout collectionViewLayout:NSCollectionViewLayout, sizeForItemAtIndexPath indexPath:NSIndexPath) -> NSSize
+     
+    func collectionView(collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> NSSize
     {
         var retVal: NSSize!
         
@@ -345,124 +355,11 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
             rows = table4Contents[indexPath.item].displayText.componentsSeparatedByString("\n").count
         }
 
-        retVal = NSSize(width: collectionView.frame.width, height: CGFloat(rows * 17))
+        retVal = NSSize(width: collectionView.frame.width, height: CGFloat(rows * 21))
         
         return retVal
     }
-
     
-    
-    
-    func collectionView(collectionView: NSCollectionView, didSelectItemsAtIndexPaths indexPaths: Set<NSIndexPath>)
-    {
-        var table: String = ""
-        
-        if collectionView == collection1
-        {
-            table = "Table1"
-        }
-        else if collectionView == collection2
-        {
-            table = "Table2"
-        }
-        else if collectionView == collection3
-        {
-            table = "Table3"
-        }
-        else // if collectionView == collection4
-        {
-            table = "Table4"
-        }
-
-        if let selectedIndexPath = collectionView.selectionIndexPaths.first
-            where selectedIndexPath.section != -1 && selectedIndexPath.item != -1
-        {
-                // There is a selected index path, get the image at that path.
-            
-                dataCellClicked(selectedIndexPath.item, table: table, viewClicked: collectionView)
-        }
-        
-        
-        
-       // handleSelectionChanged()
-        
-       // dataCellClicked(rowID: Int, table: String, viewClicked: NSView)
-    }
-    
-    
-    /*
-    func collectionView(collectionView: NSCollectionView, didDeselectItemsAtIndexPaths indexPaths: Set<NSIndexPath>)
-    {
-        handleSelectionChanged()
-    }
-    
-    private func handleSelectionChanged() {
-        guard let imageSelectionHandler = imageSelectionHandler else { return }
-        
-        /*
-        The collection view does not support multiple selection, so just check
-        the first index.
-        */
-        let selectedImage: ImageFile?
-        
-        if let selectedIndexPath = collectionView.selectionIndexPaths.first
-            where selectedIndexPath.section != -1 && selectedIndexPath.item != -1 {
-                // There is a selected index path, get the image at that path.
-                selectedImage = imageCollections[selectedIndexPath.section].images[selectedIndexPath.item]
-        }
-        else {
-            /*
-            There is no selected index path -- the collection view supports
-            empty selection, there is no selected image.
-            */
-            selectedImage = nil
-        }
-        
-        imageSelectionHandler(selectedImage)
-    }
-
- */
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-/*
-    
-    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat
-    {
-        var rows: Int = 0
-        
-        if tableView == table1
-        {
-            rows = table1Contents[row].displayText.componentsSeparatedByString("\n").count
-        }
-        else if tableView == table2
-        {
-            rows = table2Contents[row].displayText.componentsSeparatedByString("\n").count
-        }
-        else if tableView == table3
-        {
-            rows = table3Contents[row].displayText.componentsSeparatedByString("\n").count
-        }
-        else // if aTableView == table4
-        {
-            rows = table4Contents[row].displayText.componentsSeparatedByString("\n").count
-        }
-        
-        return CGFloat(rows * 17)
-    }
-*/
-
     @IBAction func btnMenu1(sender: NSPopUpButton)
     {
     }
@@ -479,20 +376,244 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
     {
     }
     
-    @IBAction func btnAdd1(sender: NSButton)
+    @IBAction func buttonAddClicked(sender: NSButton)
     {
+        var dataType: String = ""
+            
+        // First we need to work out the type of data in the table, we get this from the button
+            
+        // Also depending on which table is clicked, we now need to do a check to make sure the row clicked is a valid task row.  If not then no need to try and edit it
+            
+        switch sender
+        {
+            case btnAdd1:
+                dataType = btnMenu1.stringValue
+                reBuildTableName = "Table1"
+                
+            case btnAdd2:
+                dataType = btnMenu2.stringValue
+                reBuildTableName = "Table2"
+                
+            case btnAdd3:
+                dataType = btnMenu3.stringValue
+                reBuildTableName = "Table3"
+                
+            case btnAdd4:
+                dataType = btnMenu4.stringValue
+                reBuildTableName = "Table4"
+                
+            default:
+                print("btnAddClicked: tag hit default for some reason")
+                
+        }
+            
+        let selectedType: String = getFirstPartofString(dataType)
+            
+        switch selectedType
+        {
+            case "Reminders":
+                NSLog("Do add reminder")
+                var myFullName: String
+                if myDisplayType == "Project"
+                {
+                    myFullName = mySelectedProject.projectName
+                }
+                else if myDisplayType == "Context"
+                {
+                    myFullName = myContextName
+                }
+                else
+                {
+                    myFullName = personContact.fullName
+                }
+                
+            //    openReminderAddView(myFullName)
+                
+            case "Evernote":
+                NSLog("Do add Evernote")
+                var myFullName: String
+                if myDisplayType == "Project"
+                {
+                    myFullName = mySelectedProject.projectName
+                }
+                else if myDisplayType == "Context"
+                {
+                    myFullName = myContextName
+                }
+                else
+                {
+                    myFullName = personContact.fullName
+                }
+                
+            //    openEvernoteAddView(myFullName)
+                
+            case "Omnifocus":
+                NSLog("do omnifocus add")
+                var myOmniUrlPath: String
+                
+                if myDisplayType == "Project"
+                {
+                    myOmniUrlPath = "omnifocus:///add?name=Set Project to '\(mySelectedProject.projectName)'"
+                }
+                else
+                {
+                    var myFullName: String = ""
+                    if myDisplayType == "Context"
+                    {
+                        myFullName = myContextName
+                    }
+                    else
+                    {
+                        myFullName = personContact.fullName
+                    }
+                    myOmniUrlPath = "omnifocus:///add?name=Set Context to '\(myFullName)'"
+                }
+                
+                let escapedURL = myOmniUrlPath.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+                
+                let myOmniUrl: NSURL = NSURL(string: escapedURL!)!
+                
+  //              if UIApplication.sharedApplication().canOpenURL(myOmniUrl) == true
+   //             {
+    //                UIApplication.sharedApplication().openURL(myOmniUrl)
+      //          }
+                
+            case "Calendar":
+                NSLog("Do calendar add")
+                
+       //         let evc = EKEventEditViewController()
+       //         evc.eventStore = eventStore
+       //         evc.editViewDelegate = self
+       //         self.presentViewController(evc, animated: true, completion: nil)
+                
+            case "OneNote":
+                NSLog("Do Onenote add")
+                /*
+                var myItemFound: Bool = false
+                var myStartPage: String = ""
+                
+                // First check, if a project does the notebook exist already, or if a person, does the Section in People notebook exist
+                
+                if myDisplayType == "Project"
+                {
+                    let alert = UIAlertController(title: "OneNote", message:
+                        "Creating OneNote Notebook for this Project.  OneNote will open when complete.", preferredStyle: UIAlertControllerStyle.Alert)
+                    
+                    self.presentViewController(alert, animated: false, completion: nil)
+                    
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+                    
+                    
+                    myItemFound = myOneNoteNotebooks.checkExistenceOfNotebook(mySelectedProject.projectName)
+                    if myItemFound
+                    {
+                        let alert = UIAlertController(title: "OneNote", message:
+                            "Notebook already exists for this Project", preferredStyle: UIAlertControllerStyle.Alert)
+                        
+                        self.presentViewController(alert, animated: false, completion: nil)
+                        
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+                    }
+                    else
+                    {
+                        myStartPage = self.myOneNoteNotebooks.createNewNotebookForProject(self.mySelectedProject.projectName)
+                    }
+                }
+                else
+                {
+                    var myFullName: String = ""
+                    if myDisplayType == "Context"
+                    {
+                        myFullName = myContextName
+                    }
+                    else
+                    {
+                        myFullName = personContact.fullName
+                    }
+                    
+                    if myFullName != ""
+                    {
+                        let alert = UIAlertController(title: "OneNote", message:
+                            "Creating OneNote Section for this Person.  OneNote will open when complete.", preferredStyle: UIAlertControllerStyle.Alert)
+                        
+                        self.presentViewController(alert, animated: false, completion: nil)
+                        
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+                        
+                        myItemFound = myOneNoteNotebooks.checkExistenceOfPerson(myFullName)
+                        if myItemFound
+                        {
+                            let alert = UIAlertController(title: "OneNote", message:
+                                "Entry already exists for this Person", preferredStyle: UIAlertControllerStyle.Alert)
+                            
+                            self.presentViewController(alert, animated: false, completion: nil)
+                            
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+                        }
+                        else
+                        {
+                            // Create a Section for the Person and add an initial page
+                            
+                            myStartPage = myOneNoteNotebooks.createNewSectionForPerson(myFullName)
+                        }
+                    }
+                }
+                
+                let myOneNoteUrlPath = myStartPage
+                
+                let myOneNoteUrl: NSURL = NSURL(string: myOneNoteUrlPath)!
+                
+                if UIApplication.sharedApplication().canOpenURL(myOneNoteUrl) == true
+                {
+                    UIApplication.sharedApplication().openURL(myOneNoteUrl)
+                }
+*/
+            case "Tasks":
+                let workingTask = task(inTeamID: myCurrentTeam.teamID)
+                
+                let tasksViewControl = self.storyboard!.instantiateControllerWithIdentifier("macTaskViewController") as! macTaskViewController
+                
+                tasksViewControl.passedTask = workingTask
+                tasksViewControl.delegate = self
+                tasksViewControl.table = reBuildTableName
+                
+                self.presentViewControllerAsModalWindow(tasksViewControl)
+            
+            default:
+                NSLog("Do nothing")
+        }
     }
     
-    @IBAction func btnAdd2(sender: NSButton)
-    {
-    }
     
-    @IBAction func btnAdd3(sender: NSButton)
+    @IBAction func btnSetDate(sender: NSButton)
     {
-    }
-    
-    @IBAction func btnAdd4(sender: NSButton)
-    {
+        myWorkingTask.startDate = datePicker.dateValue
+
+        switch myWorkingTable
+        {
+            case "Table1":
+                table1Contents = Array()
+                populateArraysForTables("Table1")
+            
+            case "Table2":
+                table2Contents = Array()
+                populateArraysForTables("Table2")
+            
+            case "Table3":
+                table3Contents = Array()
+                populateArraysForTables("Table3")
+            
+            case "Table4":
+                table4Contents = Array()
+                populateArraysForTables("Table4")
+            
+            default:print("displayTaskOptions: inTable hit default for some reason")
+        }
+        
+        datePicker.hidden = true
+        btnSetDate.hidden = true
+        showFields()
+
     }
     
     func hideFields()
@@ -506,10 +627,12 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         btnAdd2.hidden = true
         btnAdd3.hidden = true
         btnAdd4.hidden = true
-        collection1.hidden = true
-        collection2.hidden = true
-        collection3.hidden = true
-        collection4.hidden = true
+        colScroll1.hidden = true
+        colScroll2.hidden = true
+        colScroll3.hidden = true
+        colScroll4.hidden = true
+        datePicker.hidden = true
+        btnSetDate.hidden = true
     }
 
     func showFields()
@@ -519,15 +642,11 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         btnMenu2.hidden = false
         btnMenu3.hidden = false
         btnMenu4.hidden = false
-        collection1.hidden = false
-        collection2.hidden = false
-        collection3.hidden = false
-        collection4.hidden = false
-        
-        NSLog("Need to add code for showing the correct add buttons")
+        colScroll1.hidden = false
+        colScroll2.hidden = false
+        colScroll3.hidden = false
+        colScroll4.hidden = false
     }
-
-    
     
     func buildSidebar()
     {
@@ -703,12 +822,9 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
             }
             else if myText == "Inbox"
             {
-                NSLog("Do Inbox viewcontroller")
-                //                let GTDInboxViewControl = self.storyboard!.instantiateViewControllerWithIdentifier("GTDInbox") as! GTDInboxViewController
+                let inboxViewControl = self.storyboard!.instantiateControllerWithIdentifier("macTaskInbox") as! macTaskInbox
                 
-                //                GTDInboxViewControl.delegate = self
-                
-                //                self.presentViewController(GTDInboxViewControl, animated: true, completion: nil)
+                self.presentViewControllerAsModalWindow(inboxViewControl)
             }
             else if myText == "Maintain People" || myText == "Maintain Places" || myText == "Maintain Tools"
             {
@@ -797,10 +913,10 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         }
         
         // Here is where we will set the titles for the buttons
-        setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, inTitle: mySelectedProject.projectName))
-        setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, inTitle: mySelectedProject.projectName))
-        setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, inTitle: mySelectedProject.projectName))
-        setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, inTitle: mySelectedProject.projectName))
+        setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, title: mySelectedProject.projectName))
+        setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, title: mySelectedProject.projectName))
+        setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, title: mySelectedProject.projectName))
+        setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, title: mySelectedProject.projectName))
         
         collection1.reloadData()
         collection2.reloadData()
@@ -831,10 +947,10 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         
         // Here is where we will set the titles for the buttons
 
-        setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, inTitle: personContact.fullName))
-        setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, inTitle: personContact.fullName))
-        setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, inTitle: personContact.fullName))
-        setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, inTitle: personContact.fullName))
+        setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, title: personContact.fullName))
+        setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, title: personContact.fullName))
+        setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, title: personContact.fullName))
+        setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, title: personContact.fullName))
     }
     
     func displayContext(context: String)
@@ -860,10 +976,10 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         
         // Here is where we will set the titles for the buttons
 
-        setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, inTitle: context))
-        setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, inTitle: context))
-        setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, inTitle: context))
-        setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, inTitle: context))
+        setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, title: context))
+        setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, title: context))
+        setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, title: context))
+        setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, title: context))
     }
 
     func displayScreen()
@@ -898,35 +1014,35 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
             if myPane.paneOrder == 1
             {
                 setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: myPane.paneName)
-                setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, inTitle: myButtonName))
+                setMenuTitle(btnMenu1, dataArray: menu1Options, searchText: setButtonTitle(btnMenu1, title: myButtonName))
                 itemSelected = myPane.paneName
             }
             
             if myPane.paneOrder == 2
             {
                 setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: myPane.paneName)
-                setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, inTitle: myButtonName))
+                setMenuTitle(btnMenu2, dataArray: menu2Options, searchText: setButtonTitle(btnMenu2, title: myButtonName))
             }
             
             if myPane.paneOrder == 3
             {
                 setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: myPane.paneName)
-                setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, inTitle: myButtonName))
+                setMenuTitle(btnMenu3, dataArray: menu3Options, searchText: setButtonTitle(btnMenu3, title: myButtonName))
             }
             
             if myPane.paneOrder == 4
             {
                 setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: myPane.paneName)
-                setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, inTitle: myButtonName))
+                setMenuTitle(btnMenu4, dataArray: menu4Options, searchText: setButtonTitle(btnMenu4, title: myButtonName))
             }
         }
     }
 
-    func setButtonTitle(inButton: NSComboBox, inTitle: String) -> String
+    func setButtonTitle(button: NSComboBox, title: String) -> String
     {
         var workString: String = ""
         
-        let dataType = inButton.stringValue
+        let dataType = button.stringValue
         
         let selectedType: String = getFirstPartofString(dataType)
         
@@ -934,152 +1050,89 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         switch selectedType
         {
         case "Reminders":
-            workString = "Reminders: use List '\(inTitle)'"
+            workString = "Reminders: use List '\(title)'"
             
         case "Evernote":
-            workString = "Evernote: use Tag '\(inTitle)'"
+            workString = "Evernote: use Tag '\(title)'"
             
         case "Omnifocus":
             if myDisplayType == "Project"
             {
-                workString = "Omnifocus: use Project '\(inTitle)'"
+                workString = "Omnifocus: use Project '\(title)'"
             }
             else
             {
-                workString = "Omnifocus: use Context '\(inTitle)'"
+                workString = "Omnifocus: use Context '\(title)'"
             }
             
         case "OneNote":
             
             if myDisplayType == "Project"
             {
-                workString = "OneNote: use Notebook '\(inTitle)'"
+                workString = "OneNote: use Notebook '\(title)'"
             }
             else
             {
-                workString = "OneNote: use Notebook 'People' and Section '\(inTitle)'"
+                workString = "OneNote: use Notebook 'People' and Section '\(title)'"
             }
             
         default:
-            workString = inButton.stringValue
+            workString = button.stringValue
         }
         
         if myDisplayType != ""
         {
-            setAddButtonState(inButton.tag)
+            setAddButton(button)
         }
         
         return workString
     }
     
-    func setAddButtonState(inTable: Int)
+    func setAddButton(button: NSComboBox)
     {
-        // Hide all of the buttons
-        // Decide which buttons to show
+        let selectedType = getFirstPartofString(button.stringValue)
+  
+        var btnAdd: NSButton!
         
-        var selectedType: String = ""
-        
-        switch inTable
+        if button == btnMenu1
         {
-        case 1:
-            selectedType = getFirstPartofString(btnMenu1.stringValue)
-            
-            switch selectedType
-            {
+            btnAdd = btnAdd1
+        }
+        else if button == btnMenu2
+        {
+            btnAdd = btnAdd2
+        }
+        else if button == btnMenu3
+        {
+            btnAdd = btnAdd3
+        }
+        else //if button == btnMenu4
+        {
+            btnAdd = btnAdd4
+        }
+        
+        switch selectedType
+        {
             case "Reminders":
-                
-                btnAdd1.hidden = false
-                
+                btnAdd.hidden = false
+            
             case "Evernote":
-                btnAdd1.hidden = false
-                
+                button.hidden = false
+            
             case "Omnifocus":
-                btnAdd1.hidden = false
-                
+                btnAdd.hidden = false
+            
             case "Calendar":
-                btnAdd1.hidden = false
-                
+                btnAdd.hidden = false
+            
             case "OneNote":
-                btnAdd1.hidden = false
-                
+                btnAdd.hidden = false
+            
+            case "Tasks":
+                btnAdd.hidden = false
+            
             default:
-                btnAdd1.hidden = true
-            }
-            
-        case 2:
-            selectedType = getFirstPartofString(btnMenu2.stringValue)
-            
-            switch selectedType
-            {
-            case "Reminders":
-                btnAdd2.hidden = false
-                
-            case "Evernote":
-                btnAdd2.hidden = false
-                
-            case "Omnifocus":
-                btnAdd2.hidden = false
-                
-            case "Calendar":
-                btnAdd2.hidden = false
-                
-            case "OneNote":
-                btnAdd2.hidden = false
-                
-            default:
-                btnAdd2.hidden = true
-            }
-            
-        case 3:
-            selectedType = getFirstPartofString(btnMenu3.stringValue)
-            
-            switch selectedType
-            {
-            case "Reminders":
-                btnAdd3.hidden = false
-                
-            case "Evernote":
-                btnAdd3.hidden = false
-                
-            case "Omnifocus":
-                btnAdd3.hidden = false
-                
-            case "Calendar":
-                btnAdd3.hidden = false
-                
-            case "OneNote":
-                btnAdd3.hidden = false
-                
-            default:
-                btnAdd3.hidden = true
-            }
-            
-        case 4:
-            selectedType = getFirstPartofString(btnMenu4.stringValue)
-            
-            switch selectedType
-            {
-            case "Reminders":
-                btnAdd4.hidden = false
-                
-            case "Evernote":
-                btnAdd4.hidden = false
-                
-            case "Omnifocus":
-                btnAdd4.hidden = false
-                
-            case "Calendar":
-                btnAdd4.hidden = false
-                
-                
-            case "OneNote":
-                btnAdd4.hidden = false
-                
-            default:
-                btnAdd4.hidden = true
-            }
-            
-        default: break
+                btnAdd.hidden = true
         }
     }
 
@@ -1091,31 +1144,31 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         {
         case "Table1":
             table1Contents = populateArrayDetails(inTable)
-            dispatch_async(dispatch_get_main_queue())
-            {
+         //   dispatch_async(dispatch_get_main_queue())
+         //   {
                 self.collection1.reloadData()
-            }
+        //    }
             
         case "Table2":
             table2Contents = populateArrayDetails(inTable)
-            dispatch_async(dispatch_get_main_queue())
-            {
+        //    dispatch_async(dispatch_get_main_queue())
+        //    {
                 self.collection2.reloadData()
-            }
+        //    }
             
         case "Table3":
             table3Contents = populateArrayDetails(inTable)
-            dispatch_async(dispatch_get_main_queue())
-            {
+         //   dispatch_async(dispatch_get_main_queue())
+         //   {
                 self.collection3.reloadData()
-            }
+         //   }
             
         case "Table4":
             table4Contents = populateArrayDetails(inTable)
-            dispatch_async(dispatch_get_main_queue())
-            {
+         //   dispatch_async(dispatch_get_main_queue())
+         //   {
                 self.collection4.reloadData()
-            }
+         //   }
             
         default:
             print("populateArraysForTables: hit default for some reason")
@@ -1437,7 +1490,7 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
             {
                 myString += myTask.displayDueDate
             }
-            writeRowToArray(myString, inTable: &tableContents)
+            writeRowToArray(myString, table: &tableContents, targetTask: myTask)
         }
         return tableContents
     }
@@ -1470,566 +1523,20 @@ class macStartViewController: NSViewController, NSOutlineViewDelegate, NSOutline
         }
     }
     
-    func dataCellClicked(rowID: Int, table: String, viewClicked: NSView)
+    func dataCellClicked(notification: NSNotification)
     {
-        var dataType: String = ""
-        // First we need to work out the type of data in the table, we get this from the button
-        
-        // Also depending on which table is clicked, we now need to do a check to make sure the row clicked is a valid task row.  If not then no need to try and edit it
-        
-        var myRowContents: String = "'"
-        let myRowClicked = rowID
-        
-        switch table
-        {
-            case "Table1":
-                dataType = btnMenu1.stringValue
-                myRowContents = table1Contents[rowID].displayText
-            
-            case "Table2":
-                dataType = btnMenu2.stringValue
-                myRowContents = table2Contents[rowID].displayText
-            
-            case "Table3":
-                dataType = btnMenu3.stringValue
-                myRowContents = table3Contents[rowID].displayText
-            
-            case "Table4":
-                dataType = btnMenu4.stringValue
-                myRowContents = table4Contents[rowID].displayText
-            
-            default:
-                print("dataCellClicked: inTable hit default for some reason")
-            
-        }
-        
-        let selectedType: String = getFirstPartofString(dataType)
+        let mySelectedItemDetails = notification.userInfo!["selectedItemDetails"] as! selectedItemDetails
+        let selectedType = mySelectedItemDetails.targetType
+        let targetObject = mySelectedItemDetails.targetObject
+        let title = mySelectedItemDetails.title
+        let sourceView = mySelectedItemDetails.sourceView
+        let table = mySelectedItemDetails.table
         
         switch selectedType
         {
-            case "Reminders":
-                if myRowContents != "No reminders list found"
-                {
-  /*                  reBuildTableName = table
-                
-                    var myFullName: String
-                    if myDisplayType == "Project"
-                    {
-                        myFullName = mySelectedProject.projectName
-                    }
-                    else if myDisplayType == "Context"
-                    {
-                        myFullName = myContextName
-                    }
-                    else
-                    {
-                        myFullName = personContact.fullName
-                    }
-                    openReminderEditView(reminderDetails.reminders[rowID].calendarItemIdentifier, inCalendarName: myFullName)
-*/
-                }
-            case "Evernote":
-                if myRowContents != "No Notes found"
-                {
-/*                    reBuildTableName = table
-                
-                    var myEvernoteDataArray = myEvernote.getEvernoteDataArray()
-                
-                    let myGuid = myEvernoteDataArray[rowID].identifier
-                    let myNoteRef = myEvernoteDataArray[rowID].NoteRef
-                
-                    openEvernoteEditView(myGuid, inNoteRef: myNoteRef)
-*/
-                }
-            
-            case "Calendar":
-            NSLog("calendar to do")
-/*
-                let calendarOption: UIAlertController = UIAlertController(title: "Calendar Options", message: "Select action to take", preferredStyle: .ActionSheet)
-            
-                let edit = UIAlertAction(title: "Edit Meeting", style: .Default, handler: { (action: UIAlertAction) -> () in
-                    // doing something for "product page
-                    let evc = EKEventEditViewController()
-                    evc.eventStore = eventStore
-                    evc.editViewDelegate = self
-                    evc.event = self.eventDetails.events[rowID]
-                    self.presentViewController(evc, animated: true, completion: nil)
-                })
-            
-                let agenda = UIAlertAction(title: "Agenda", style: .Default, handler: { (action: UIAlertAction) -> () in
-                    // doing something for "product page"
-                    self.openMeetings("Agenda", workingTask: self.eventDetails.calendarItems[rowID])
-                })
-            
-                let minutes = UIAlertAction(title: "Minutes", style: .Default, handler: { (action: UIAlertAction) -> () in
-                    // doing something for "product page"
-                    self.openMeetings("Minutes", workingTask: self.eventDetails.calendarItems[rowID])
-                })
-            
-                let personNotes = UIAlertAction(title: "Personal Notes", style: .Default, handler: { (action: UIAlertAction) -> () in
-                    // doing something for "product page"
-                    self.openMeetings("Personal Notes", workingTask: self.eventDetails.calendarItems[rowID])
-                })
-            
-                var agendaDisplay: Bool = false
-                if eventDetails.calendarItems[myRowClicked].startDate.compare(NSDate()) == NSComparisonResult.OrderedDescending
-                { // Start date is in the future
-                    calendarOption.addAction(edit)
-                    calendarOption.addAction(agenda)
-                    agendaDisplay = true
-                }
-            
-                // Is there an Agenda created for the meeting, if not then do not display Minutes or Notes options
-                
-                var minutesDisplay: Bool = false
-                eventDetails.calendarItems[myRowClicked].loadAgenda()
-                if eventDetails.calendarItems[myRowClicked].agendaItems.count > 0
-                { // Start date is in the future
-                    calendarOption.addAction(minutes)
-                    calendarOption.addAction(personNotes)
-                    minutesDisplay = true
-                }
-            
-                if agendaDisplay || minutesDisplay
-                {
-                    calendarOption.popoverPresentationController?.sourceView = self.view
-                    calendarOption.popoverPresentationController?.sourceRect = CGRectMake(self.view.bounds.width / 2.0, self.view.bounds.height / 2.0, 1.0, 1.0)
-                
-                    self.presentViewController(calendarOption, animated: true, completion: nil)
-                }
-                calendarTable = table
- */
-            case "Project Membership":
-             NSLog("PM to do")
-                // Project team membership details
-/*                if myDisplayType == "Project"
-                {
-                    let myPerson: ABRecord = findPersonRecord(projectMemberArray[rowID]) as ABRecord
-                    loadPerson(myPerson)
-                }
-                else
-                {
-                    loadProject(Int(projectMemberArray[rowID])!, teamID: myCurrentTeam.teamID)
-                }
- */
-            case "OneNote":
-             NSLog("onenote to do")
-/*                let myOneNoteUrlPath = myOneNoteNotebooks.pages[rowID].urlCallback
-            
-                //  let myEnUrlPath = stringByChangingChars(myTempPath, " ", "%20")
-                let myOneNoteUrl: NSURL = NSURL(string: myOneNoteUrlPath)!
-            
-                if UIApplication.sharedApplication().canOpenURL(myOneNoteUrl) == true
-                {
-                    UIApplication.sharedApplication().openURL(myOneNoteUrl)
-                }
-*/
-            case "GMail":
-             NSLog("GMail to do")
-/*                hideFields()
-            
-                myWebView.hidden = false
-                btnSendToInbox.hidden = false
-                btnCloseWindow.hidden = false
-                myWorkingGmailMessage = myGmailMessages.messages[rowID]
-                myWebView.loadHTMLString(myGmailMessages.messages[rowID].body, baseURL: nil)
-*/
-            case "Hangouts":
-             NSLog("hangouts to do")
-/*                showFields()
-            
-                myWebView.hidden = false
-                btnSendToInbox.hidden = false
-            
-                btnCloseWindow.hidden = false
-                myWorkingGmailMessage = myHangoutsMessages.messages[rowID]
-                myWebView.loadHTMLString(myHangoutsMessages.messages[rowID].body, baseURL: nil)
-*/
-            case "Tasks":
-                
-                let mypopup = popupMenuView()
-            
-                
-                
-                //let myOptions = displayTaskOptions(myTaskItems[rowID], targetTable: table)
-                //myOptions.popoverPresentationController!.sourceView = viewClicked
-            
-           //     self.presentViewController(myOptions, animated: true, completion: nil)
-            
-            default:
-                NSLog("Do nothing")
-        }
-    }
-/*
-    func displayTaskOptions(workingTask: task, targetTable: String) -> NSMenu
-    {
-        let myOptions: NSMenuItem = NSMenuItem(title: "Select Action", message: "Select action to take", preferredStyle: .ActionSheet)
-        
-        let myOption1 = UIAlertAction(title: "Edit Action", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let popoverContent = self.storyboard?.instantiateViewControllerWithIdentifier("tasks") as! taskViewController
-            popoverContent.modalPresentationStyle = .Popover
-            let popover = popoverContent.popoverPresentationController
-            popover!.delegate = self
-            popover!.sourceView = self.view
-            popover!.sourceRect = CGRectMake(0,0,700,700)
-            
-            popoverContent.passedTask = workingTask
-            
-            popoverContent.preferredContentSize = CGSizeMake(700,700)
-            
-            self.presentViewController(popoverContent, animated: true, completion: nil)
-        })
-        
-        let myOption2 = UIAlertAction(title: "Action Updates", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let popoverContent = self.storyboard?.instantiateViewControllerWithIdentifier("taskUpdate") as! taskUpdatesViewController
-            popoverContent.modalPresentationStyle = .Popover
-            let popover = popoverContent.popoverPresentationController
-            popover!.delegate = self
-            popover!.sourceView = self.view
-            popover!.sourceRect = CGRectMake(0,0,700,700)
-            
-            popoverContent.passedTask = workingTask
-            
-            popoverContent.preferredContentSize = CGSizeMake(700,700)
-            
-            self.presentViewController(popoverContent, animated: true, completion: nil)
-        })
-        
-        let myOption3 = UIAlertAction(title: "Defer: 1 Hour", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let myCalendar = NSCalendar.currentCalendar()
-            
-            let newTime = myCalendar.dateByAddingUnit(
-                .Hour,
-                value: 1,
-                toDate: NSDate(),
-                options: [])!
-            
-            workingTask.startDate = newTime
-            
-            switch targetTable
+        case "Reminders":
+            if targetObject.displayText != "No reminders list found"
             {
-            case "Table1":
-                self.table1Contents = Array()
-                self.populateArraysForTables("Table1")
-                
-            case "Table2":
-                self.table2Contents = Array()
-                self.populateArraysForTables("Table2")
-                
-            case "Table3":
-                self.table3Contents = Array()
-                self.populateArraysForTables("Table3")
-                
-            case "Table4":
-                self.table4Contents = Array()
-                self.populateArraysForTables("Table4")
-                
-            default:
-                print("displayTaskOptions: inTable hit default for some reason")
-            }
-        })
-        
-        let myOption4 = UIAlertAction(title: "Defer: 4 Hours", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let myCalendar = NSCalendar.currentCalendar()
-            
-            let newTime = myCalendar.dateByAddingUnit(
-                .Hour,
-                value: 4,
-                toDate: NSDate(),
-                options: [])!
-            
-            workingTask.startDate = newTime
-            
-            switch targetTable
-            {
-            case "Table1":
-                self.table1Contents = Array()
-                self.populateArraysForTables("Table1")
-                
-            case "Table2":
-                self.table2Contents = Array()
-                self.populateArraysForTables("Table2")
-                
-            case "Table3":
-                self.table3Contents = Array()
-                self.populateArraysForTables("Table3")
-                
-            case "Table4":
-                self.table4Contents = Array()
-                self.populateArraysForTables("Table4")
-                
-            default:print("displayTaskOptions: inTable hit default for some reason")
-            }
-        })
-        
-        let myOption5 = UIAlertAction(title: "Defer: 1 Day", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let myCalendar = NSCalendar.currentCalendar()
-            
-            let newTime = myCalendar.dateByAddingUnit(
-                .Day,
-                value: 1,
-                toDate: NSDate(),
-                options: [])!
-            
-            workingTask.startDate = newTime
-            
-            switch targetTable
-            {
-            case "Table1":
-                self.table1Contents = Array()
-                self.populateArraysForTables("Table1")
-                
-            case "Table2":
-                self.table2Contents = Array()
-                self.populateArraysForTables("Table2")
-                
-            case "Table3":
-                self.table3Contents = Array()
-                self.populateArraysForTables("Table3")
-                
-            case "Table4":
-                self.table4Contents = Array()
-                self.populateArraysForTables("Table4")
-                
-            default:print("displayTaskOptions: inTable hit default for some reason")
-            }
-        })
-        
-        let myOption6 = UIAlertAction(title: "Defer: 1 Week", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let myCalendar = NSCalendar.currentCalendar()
-            
-            let newTime = myCalendar.dateByAddingUnit(
-                .Day,
-                value: 7,
-                toDate: NSDate(),
-                options: [])!
-            
-            workingTask.startDate = newTime
-            
-            switch targetTable
-            {
-            case "Table1":
-                self.table1Contents = Array()
-                self.populateArraysForTables("Table1")
-                
-            case "Table2":
-                self.table2Contents = Array()
-                self.populateArraysForTables("Table2")
-                
-            case "Table3":
-                self.table3Contents = Array()
-                self.populateArraysForTables("Table3")
-                
-            case "Table4":
-                self.table4Contents = Array()
-                self.populateArraysForTables("Table4")
-                
-            default:print("displayTaskOptions: inTable hit default for some reason")
-            }
-        })
-        
-        let myOption7 = UIAlertAction(title: "Defer: 1 Month", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let myCalendar = NSCalendar.currentCalendar()
-            
-            let newTime = myCalendar.dateByAddingUnit(
-                .Month,
-                value: 1,
-                toDate: NSDate(),
-                options: [])!
-            
-            workingTask.startDate = newTime
-            
-            switch targetTable
-            {
-            case "Table1":
-                self.table1Contents = Array()
-                self.populateArraysForTables("Table1")
-                
-            case "Table2":
-                self.table2Contents = Array()
-                self.populateArraysForTables("Table2")
-                
-            case "Table3":
-                self.table3Contents = Array()
-                self.populateArraysForTables("Table3")
-                
-            case "Table4":
-                self.table4Contents = Array()
-                self.populateArraysForTables("Table4")
-                
-            default:print("displayTaskOptions: inTable hit default for some reason")
-            }
-        })
-        
-        let myOption8 = UIAlertAction(title: "Defer: 1 Year", style: .Default, handler: { (action: UIAlertAction) -> () in
-            let myCalendar = NSCalendar.currentCalendar()
-            
-            let newTime = myCalendar.dateByAddingUnit(
-                .Year,
-                value: 1,
-                toDate: NSDate(),
-                options: [])!
-            
-            workingTask.startDate = newTime
-            
-            switch targetTable
-            {
-            case "Table1":
-                self.table1Contents = Array()
-                self.populateArraysForTables("Table1")
-                
-            case "Table2":
-                self.table2Contents = Array()
-                self.populateArraysForTables("Table2")
-                
-            case "Table3":
-                self.table3Contents = Array()
-                self.populateArraysForTables("Table3")
-                
-            case "Table4":
-                self.table4Contents = Array()
-                self.populateArraysForTables("Table4")
-                
-            default:print("displayTaskOptions: inTable hit default for some reason")
-            }
-        })
-        
-        let myOption9 = UIAlertAction(title: "Defer: Custom", style: .Default, handler: { (action: UIAlertAction) -> () in
-            if workingTask.displayStartDate == ""
-            {
-                self.myDatePicker.date = NSDate()
-            }
-            else
-            {
-                self.myDatePicker.date = workingTask.startDate
-            }
-            
-            self.myDatePicker.datePickerMode = UIDatePickerMode.DateAndTime
-            self.hideFields()
-            self.myDatePicker.hidden = false
-            self.btnSetStartDate.hidden = false
-            self.myWorkingTask = workingTask
-            self.myWorkingTable = targetTable
-        })
-        
-        myOptions.addAction(myOption1)
-        myOptions.addAction(myOption2)
-        myOptions.addAction(myOption3)
-        myOptions.addAction(myOption4)
-        myOptions.addAction(myOption5)
-        myOptions.addAction(myOption6)
-        myOptions.addAction(myOption7)
-        myOptions.addAction(myOption8)
-        myOptions.addAction(myOption9)
-        
-        return myOptions
-    }
-
-*/
-}
-
-class mainCollectionCell: NSObject
-{
-    var label: NSString!
-}
-
-
-
-
-class MainLabelCollectionViewItemView: NSView {
-    
-    // MARK: properties
-    
-    var selected: Bool = false
-    {
-        didSet
-        {
-            if selected != oldValue
-            {
-                needsDisplay = true
-            }
-        }
-    }
-    var highlightState: NSCollectionViewItemHighlightState = .None
-    {
-        didSet
-        {
-            if highlightState != oldValue
-            {
-                needsDisplay = true
-            }
-        }
-    }
-    
-    // MARK: NSView
-    
-    override var wantsUpdateLayer: Bool
-    {
-        return true
-    }
-    
-    override func updateLayer()
-    {
-//        if selected
-//        {
-//            self.layer?.cornerRadius = 10
-//            layer!.backgroundColor = NSColor.whiteColor().CGColor
-//        } 
-//        else
-//        {
-//            self.layer?.cornerRadius = 0
-//            layer!.backgroundColor = NSColor.whiteColor().CGColor
-//        }
-        layer!.backgroundColor = NSColor.whiteColor().CGColor
-    }
-    
-    // MARK: init
-    
-    override init(frame frameRect: NSRect)
-    {
-        super.init(frame: frameRect)
-        wantsLayer = true
-        layer?.masksToBounds = true
-    }
-    
-    required init?(coder: NSCoder)
-    {
-        super.init(coder: coder)
-        wantsLayer = true
-        layer?.masksToBounds = true
-    }
-}
-
-class MainLabelObject: NSObject
-{
-    var title:String
-    var targetObject: TableData
-    var targetType: String
-    
-    init(title:String, targetObject: TableData, targetType: String)
-    {
-        self.title = title
-        self.targetObject = targetObject
-        self.targetType = targetType
-    }
-    
-    func dataCellClicked()
-    {
-         NSLog(" click \(title)")
-        
-        // First we need to work out the type of data in the table, we get this from the button
-        
-        // Also depending on which table is clicked, we now need to do a check to make sure the row clicked is a valid task row.  If not then no need to try and edit it
-        
-        let selectedType: String = getFirstPartofString(targetType)
-        
-        
-        NSLog("Selected type = \(selectedType)")
-        switch selectedType
-        {
-            case "Reminders":
-                if targetObject.displayText != "No reminders list found"
-                {
                 /*                  reBuildTableName = table
                 
                 var myFullName: String
@@ -2047,10 +1554,10 @@ class MainLabelObject: NSObject
                 }
                 openReminderEditView(reminderDetails.reminders[rowID].calendarItemIdentifier, inCalendarName: myFullName)
                 */
-                }
-            case "Evernote":
-                if targetObject.displayText != "No Notes found"
-                {
+            }
+        case "Evernote":
+            if targetObject.displayText != "No Notes found"
+            {
                 /*                    reBuildTableName = table
                 
                 var myEvernoteDataArray = myEvernote.getEvernoteDataArray()
@@ -2060,10 +1567,10 @@ class MainLabelObject: NSObject
                 
                 openEvernoteEditView(myGuid, inNoteRef: myNoteRef)
                 */
-                }
+            }
             
-            case "Calendar":
-                NSLog("calendar to do")
+        case "Calendar":
+            NSLog("calendar to do")
             /*
             let calendarOption: UIAlertController = UIAlertController(title: "Calendar Options", message: "Select action to take", preferredStyle: .ActionSheet)
             
@@ -2120,8 +1627,8 @@ class MainLabelObject: NSObject
             calendarTable = table
             */
             
-            case "Project Membership":
-                NSLog("PM to do")
+        case "Project Membership":
+            NSLog("PM to do")
             // Project team membership details
             /*                if myDisplayType == "Project"
             {
@@ -2134,8 +1641,8 @@ class MainLabelObject: NSObject
             }
             */
             
-            case "OneNote":
-                NSLog("onenote to do")
+        case "OneNote":
+            NSLog("onenote to do")
             /*                let myOneNoteUrlPath = myOneNoteNotebooks.pages[rowID].urlCallback
             
             //  let myEnUrlPath = stringByChangingChars(myTempPath, " ", "%20")
@@ -2147,8 +1654,8 @@ class MainLabelObject: NSObject
             }
             */
             
-            case "GMail":
-                NSLog("GMail to do")
+        case "GMail":
+            NSLog("GMail to do")
             /*                hideFields()
             
             myWebView.hidden = false
@@ -2158,8 +1665,8 @@ class MainLabelObject: NSObject
             myWebView.loadHTMLString(myGmailMessages.messages[rowID].body, baseURL: nil)
             */
             
-            case "Hangouts":
-                NSLog("hangouts to do")
+        case "Hangouts":
+            NSLog("hangouts to do")
             /*                showFields()
             
             myWebView.hidden = false
@@ -2170,30 +1677,396 @@ class MainLabelObject: NSObject
             myWebView.loadHTMLString(myHangoutsMessages.messages[rowID].body, baseURL: nil)
             */
             
-            case "Tasks":
+        case "Tasks":
+            let popover = NSPopover()
             
-                let mypopup = popupMenuView()
+            let myViewController = self.storyboard?.instantiateControllerWithIdentifier("popupMenuViewController") as? popupMenuViewController
+            myViewController!.header = "Select action to take"
+            myViewController!.menuArray = displayTaskOptions(targetObject.targetTask)
+            myViewController!.workingObject = targetObject.targetTask
+            myViewController!.table = table
+            myViewController!.delegate = self
+            myViewController!.controller = popover
             
+            
+            popover.contentViewController = myViewController
+            
+            popover.behavior = NSPopoverBehavior.Transient
+            
+            popover.showRelativeToRect(sourceView.bounds, ofView: sourceView, preferredEdge: NSRectEdge.MinY)
+            
+        default:
+            NSLog("Do nothing")
+        }
         
+    }
+
+    func displayTaskOptions(workingTask: task) -> [popupMenuOptions]
+    {
+        var myOptions: [popupMenuOptions] = Array()
+        
+        let myOption1 = popupMenuOptions()
+        myOption1.itemDescription = "Edit Action"
+        myOption1.itemAction = "Task: Edit Action"
+        
+        myOptions.append(myOption1)
+
+        let myOption3 = popupMenuOptions()
+        myOption3.itemDescription = "Defer: 1 Hour"
+        myOption3.itemAction = "Task: Defer: 1 Hour"
+        
+        myOptions.append(myOption3)
+
+        let myOption4 = popupMenuOptions()
+        myOption4.itemDescription = "Defer: 4 Hour"
+        myOption4.itemAction = "Task: Defer: 4 Hour"
+        
+        myOptions.append(myOption4)
+
+        let myOption5 = popupMenuOptions()
+        myOption5.itemDescription = "Defer: 1 Day"
+        myOption5.itemAction = "Task: Defer: 1 Day"
+        
+        myOptions.append(myOption5)
+
+        let myOption6 = popupMenuOptions()
+        myOption6.itemDescription = "Defer: 1 Week"
+        myOption6.itemAction = "Task: Defer: 1 Week"
+        
+        myOptions.append(myOption6)
+
+        let myOption7 = popupMenuOptions()
+        myOption7.itemDescription = "Defer: 1 Month"
+        myOption7.itemAction = "Task: Defer: 1 Month"
+        
+        myOptions.append(myOption7)
+
+        let myOption8 = popupMenuOptions()
+        myOption8.itemDescription = "Defer: 1 Year"
+        myOption8.itemAction = "Task: Defer: 1 Year"
+        
+        myOptions.append(myOption8)
+
+        let myOption9 = popupMenuOptions()
+        myOption9.itemDescription = "Defer: Custom"
+        myOption9.itemAction = "Task: Defer: Custom"
+        
+        myOptions.append(myOption9)
+
+        return myOptions
+    }
+    
+    func myTaskDidFinish(table: String)
+    {
+        switch table
+        {
+            case "Table1":
+                self.table1Contents = Array()
+                self.populateArraysForTables("Table1")
             
+            case "Table2":
+                self.table2Contents = Array()
+                self.populateArraysForTables("Table2")
             
-            //let myOptions = displayTaskOptions(myTaskItems[rowID], targetTable: table)
-            //myOptions.popoverPresentationController!.sourceView = viewClicked
+            case "Table3":
+                self.table3Contents = Array()
+                self.populateArraysForTables("Table3")
             
-            //     self.presentViewController(myOptions, animated: true, completion: nil)
+            case "Table4":
+                self.table4Contents = Array()
+                self.populateArraysForTables("Table4")
             
             default:
-                NSLog("Do nothing")
+                print("myTaskDidFinish: table hit default for some reason")
+        }
+    }
+    
+    func myPopupDidSelect(row: Int, table: String, action: String, workingObject: AnyObject)
+    {
+        switch action
+        {
+            case "Task: Edit Action" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                    let tasksViewControl = self.storyboard!.instantiateControllerWithIdentifier("macTaskViewController") as! macTaskViewController
+            
+                    tasksViewControl.passedTask = workingTask
+                    tasksViewControl.delegate = self
+                    tasksViewControl.table = table
+            
+                    self.presentViewControllerAsModalWindow(tasksViewControl)
+                }
+            
+            case "Task: Defer: 1 Hour" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                    
+                    let myCalendar = NSCalendar.currentCalendar()
+                
+                    let newTime = myCalendar.dateByAddingUnit(
+                        .Hour,
+                        value: 1,
+                        toDate: NSDate(),
+                        options: [])!
+                
+                    workingTask.startDate = newTime
+                }
+            
+            case "Task: Defer: 4 Hour" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                    
+                    let myCalendar = NSCalendar.currentCalendar()
+                
+                    let newTime = myCalendar.dateByAddingUnit(
+                        .Hour,
+                        value: 4,
+                        toDate: NSDate(),
+                        options: [])!
+                
+                    workingTask.startDate = newTime
+                }
+            
+            case "Task: Defer: 1 Day" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                
+                    let myCalendar = NSCalendar.currentCalendar()
+                
+                    let newTime = myCalendar.dateByAddingUnit(
+                        .Day,
+                        value: 1,
+                        toDate: NSDate(),
+                        options: [])!
+                
+                    workingTask.startDate = newTime
+                }
+            
+            case "Task: Defer: 1 Week" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                    let myCalendar = NSCalendar.currentCalendar()
+                
+                    let newTime = myCalendar.dateByAddingUnit(
+                        .Day,
+                        value: 7,
+                        toDate: NSDate(),
+                        options: [])!
+                
+                    workingTask.startDate = newTime
+                }
+            
+            case "Task: Defer: 1 Month" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                    
+                    let myCalendar = NSCalendar.currentCalendar()
+                
+                    let newTime = myCalendar.dateByAddingUnit(
+                        .Month,
+                        value: 1,
+                        toDate: NSDate(),
+                        options: [])!
+                
+                    workingTask.startDate = newTime
+                }
+            
+            case "Task: Defer: 1 Year" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+                
+                    let myCalendar = NSCalendar.currentCalendar()
+                
+                    let newTime = myCalendar.dateByAddingUnit(
+                        .Year,
+                        value: 1,
+                        toDate: NSDate(),
+                        options: [])!
+                
+                    workingTask.startDate = newTime
+                }
+            
+            case "Task: Defer: Custom" :
+                if workingObject.isKindOfClass(task)
+                {
+                    let workingTask = workingObject as! task
+            
+                    if workingTask.displayStartDate == ""
+                    {
+                        datePicker.dateValue = NSDate()
+                    }
+                    else
+                    {
+                        datePicker.dateValue = workingTask.startDate
+                    }
+                
+                    datePicker.datePickerMode = NSDatePickerMode.SingleDateMode
+                    datePicker.datePickerStyle = NSDatePickerStyle.ClockAndCalendarDatePickerStyle
+                    
+                    hideFields()
+                
+                    datePicker.hidden = false
+                    btnSetDate.hidden = false
+                    myWorkingTask = workingTask
+                    myWorkingTable = table
+                }
+
+            default:
+                print("myPopupDidSelect: action hit default for some reason")
+            
         }
 
+        switch table
+        {
+            case "Table1":
+                self.table1Contents = Array()
+                self.populateArraysForTables("Table1")
+            
+            case "Table2":
+                self.table2Contents = Array()
+                self.populateArraysForTables("Table2")
+            
+            case "Table3":
+                self.table3Contents = Array()
+                self.populateArraysForTables("Table3")
+            
+            case "Table4":
+                self.table4Contents = Array()
+                self.populateArraysForTables("Table4")
+            
+            default:
+                print("myPopupDidSelect: table hit default for some reason")
+        }
+    }
+    
+
+}
+
+class mainCollectionCell: NSObject
+{
+    var label: NSString!
+}
+
+class selectedItemDetails: NSObject
+{
+    var title:String = ""
+    var targetObject: TableData!
+    var targetType: String = ""
+    var sourceView: NSView!
+    var table: String = ""
+}
+
+
+class MainLabelCollectionViewItemView: NSView {
+    
+    // MARK: properties
+    
+    var selected: Bool = false
+    {
+        didSet
+        {
+            if selected != oldValue
+            {
+                needsDisplay = true
+            }
+        }
+    }
+    var highlightState: NSCollectionViewItemHighlightState = .None
+    {
+        didSet
+        {
+            if highlightState != oldValue
+            {
+                needsDisplay = true
+            }
+        }
+    }
+    
+    // MARK: NSView
+    
+    override var wantsUpdateLayer: Bool
+    {
+        return true
+    }
+    
+    override func updateLayer()
+    {
+//        if selected
+//        {
+//            self.layer?.cornerRadius = 10
+//            layer!.backgroundColor = NSColor.whiteColor().CGColor
+//        } 
+//        else
+//        {
+//            self.layer?.cornerRadius = 0
+//            layer!.backgroundColor = NSColor.whiteColor().CGColor
+//        }
+//        layer!.backgroundColor = NSColor.whiteColor().CGColor
+//        layer!.backgroundColor = NSColor.redColor().CGColor
+    }
+    
+    // MARK: init
+    
+    override init(frame frameRect: NSRect)
+    {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.masksToBounds = true
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        super.init(coder: coder)
+        wantsLayer = true
+        layer?.masksToBounds = true
+    }
+}
+
+class MainLabelObject: NSObject
+{
+    var title:String
+    var targetObject: TableData
+    var targetType: String
+    var sourceView: NSView
+    var table: String
+    var cellColor: CGColor!
+    
+    init(title:String, targetObject: TableData, targetType: String, sourceView: NSView, table: String)
+    {
+        self.title = title
+        self.targetObject = targetObject
+        self.targetType = targetType
+        self.sourceView = sourceView
+        self.table = table
+    }
+    
+    func dataCellClicked()
+    {
+        let selectedType: String = getFirstPartofString(targetType)
+        
+        let myItem = selectedItemDetails()
+        myItem.targetType = selectedType
+        myItem.title = title
+        myItem.targetObject = targetObject
+        myItem.sourceView = sourceView
+        myItem.table = table
+        
+        let selectedDictionary = ["selectedItemDetails" : myItem]
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("NSDataCellClickedNotification", object: nil, userInfo:selectedDictionary)
     }
 }
 
 
 class MainLabelCollectionViewItem: NSCollectionViewItem
 {
-    // MARK: properties
-    
     var labelObject: MainLabelObject?
     {
         return representedObject as? MainLabelObject
@@ -2215,11 +2088,7 @@ class MainLabelCollectionViewItem: NSCollectionViewItem
         }
     }
     
-    // MARK: outlets
-    
     @IBOutlet weak var name: NSTextField!
-    
-    // MARK: NSResponder
     
     override func mouseDown(theEvent: NSEvent)
     {
@@ -2238,14 +2107,13 @@ class MainLabelCollectionViewItem: NSCollectionViewItem
     override func viewWillAppear()
     {
         let rows = labelObject!.title.componentsSeparatedByString("\n").count
-//        NSLog("frame = \(name.frame.width), \(name.frame.height)")
-        
-        
+
         name.setFrameSize(NSSize(width: collectionView.frame.width, height: CGFloat(rows * 17)))
         
-  //      NSLog("frame \(labelObject!.title) = \(name.frame.width), \(name.frame.height)")
+        (self.view as! MainLabelCollectionViewItemView).layer!.backgroundColor = labelObject!.cellColor
+        (self.view as! MainLabelCollectionViewItemView).setFrameSize(NSSize(width: collectionView.frame.width, height: CGFloat(rows * 21)))
         
-     //   name.sizeToFit()
+        
     }
 }
 
